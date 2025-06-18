@@ -23,6 +23,18 @@ public class FileExtensionService {
 
     private final FileExtensionRepository fileExtensionRepository;
 
+    @Transactional(readOnly = true)
+    public FixedFileExtensionsReadResponse readFixedExtensions() {
+        List<FileExtension> fileExtensions = fileExtensionRepository.findByType(FIXED);
+        return FixedFileExtensionsReadResponse.of(fileExtensions);
+    }
+
+    @Transactional(readOnly = true)
+    public CustomFileExtensionsReadResponse readCustomExtensions() {
+        List<FileExtension> fileExtensions = fileExtensionRepository.findByType(CUSTOM);
+        return CustomFileExtensionsReadResponse.of(fileExtensions, FIXED_RATE_MAX_COUNT);
+    }
+
     public Long createCustomFileExtension(FileExtensionCreateRequest request) {
         List<FileExtension> fixedExtensions = fileExtensionRepository.findByType(CUSTOM);
 

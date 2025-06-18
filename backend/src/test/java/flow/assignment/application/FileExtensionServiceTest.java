@@ -27,6 +27,50 @@ class FileExtensionServiceTest {
     FileExtensionService sut;
 
     @Test
+    void 고정_확장자_목록을_조회할_수_있다() {
+        // given, when
+        var customFileExtensionsReadResponse = sut.readFixedExtensions();
+
+        // then
+        var data = customFileExtensionsReadResponse.data();
+        assertAll(
+                () -> assertThat(data.size()).isEqualTo(7),
+                () -> assertThat(data.get(0).getName()).isEqualTo("bat"),
+                () -> assertThat(data.get(0).isChecked()).isFalse(),
+                () -> assertThat(data.get(1).getName()).isEqualTo("cmd"),
+                () -> assertThat(data.get(1).isChecked()).isFalse(),
+                () -> assertThat(data.get(2).getName()).isEqualTo("com"),
+                () -> assertThat(data.get(2).isChecked()).isFalse(),
+                () -> assertThat(data.get(3).getName()).isEqualTo("cpi"),
+                () -> assertThat(data.get(3).isChecked()).isFalse(),
+                () -> assertThat(data.get(4).getName()).isEqualTo("exe"),
+                () -> assertThat(data.get(4).isChecked()).isFalse(),
+                () -> assertThat(data.get(5).getName()).isEqualTo("scr"),
+                () -> assertThat(data.get(5).isChecked()).isFalse(),
+                () -> assertThat(data.get(6).getName()).isEqualTo("js"),
+                () -> assertThat(data.get(6).isChecked()).isFalse()
+        );
+    }
+
+    @Test
+    void 커스텀_확장자_목록을_조회할_수_있다() {
+        // given
+        fileExtensionRepository.save(FileExtension.createFixed("test1", false));
+        fileExtensionRepository.save(FileExtension.createCustom("test2"));
+        fileExtensionRepository.save(FileExtension.createCustom("test3"));
+        fileExtensionRepository.save(FileExtension.createCustom("test4"));
+
+        // when
+        var customFileExtensionsReadResponse = sut.readCustomExtensions();
+
+        // then
+        assertAll(
+                () -> assertThat(customFileExtensionsReadResponse.currentCount()).isEqualTo(3),
+                () -> assertThat(customFileExtensionsReadResponse.maxCount()).isEqualTo(200)
+        );
+    }
+
+    @Test
     void 커스텀_확장자를_추가할_수_있다() {
         // given
         var request = new FileExtensionCreateRequest("sh");

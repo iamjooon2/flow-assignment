@@ -1,8 +1,13 @@
-import FileExtensionManager from './components/FileExtensionManager';
+import FixedExtensions from './components/FixedExtensions';
+import CustomExtensions from './components/CustomExtensions';
 
 function App() {
   return (
-    <FileExtensionManager />
+    <div style={{ padding: 20 }}>
+      <FixedExtensions />
+      <hr />
+      <CustomExtensions />
+    </div>
   );
 }
 

@@ -11,3 +11,37 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* layout 스타일 */
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem; /* gap-10 */
+  max-width: 42rem; /* max-w-2xl */
+  margin-left: auto;
+  margin-right: auto;
+  padding: 2rem; /* p-8 */
+}
+
+.fixed-section {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.5rem; /* gap-2 */
+}
+
+.fixed-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem; /* gap-4 */
+}
+
+.custom-input-group {
+  display: flex;
+  gap: 0.5rem; /* gap-2 */
+}
+
+.custom-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

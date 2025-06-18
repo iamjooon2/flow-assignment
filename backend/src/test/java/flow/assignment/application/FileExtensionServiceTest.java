@@ -132,7 +132,7 @@ class FileExtensionServiceTest {
 
             // when, then
             assertThatThrownBy(() -> sut.createCustomFileExtension(request))
-                    .isInstanceOf(IllegalStateException.class)
+                    .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("커스텀확장자는 최대 200개까지만 등록 가능합니다");
         }
 

@@ -9,6 +9,7 @@ import flow.assignment.dto.response.FixedFileExtensionsReadResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -40,11 +41,11 @@ public class FileExtensionController {
 
     @GetMapping("/custom")
     public ResponseEntity<CustomFileExtensionsReadResponse> getFileExtensionsCustom(
-            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
-        PageRequest pageRequest = PageRequest.of(page + 1, size, Sort.by("id").descending());
-        CustomFileExtensionsReadResponse response = fileExtensionService.readCustomExtensions(pageRequest);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        CustomFileExtensionsReadResponse response = fileExtensionService.readCustomExtensions(pageable);
         return ResponseEntity.ok(response);
     }
 

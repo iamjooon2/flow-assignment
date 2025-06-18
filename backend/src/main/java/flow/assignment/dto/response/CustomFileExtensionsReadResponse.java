@@ -3,6 +3,7 @@ package flow.assignment.dto.response;
 import java.util.List;
 
 import flow.assignment.domain.FileExtension;
+import lombok.Getter;
 
 public record CustomFileExtensionsReadResponse(
         long maxCount,
@@ -17,6 +18,7 @@ public record CustomFileExtensionsReadResponse(
         return new CustomFileExtensionsReadResponse(maxCount, fileExtensions.size(), data);
     }
 
+    @Getter
     static class CustomExtensionReadResponse {
 
         private final Long id;

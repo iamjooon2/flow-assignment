@@ -4,12 +4,13 @@ import java.util.List;
 
 import flow.assignment.domain.ExtensionType;
 import flow.assignment.domain.FileExtension;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FileExtensionRepository extends JpaRepository<FileExtension, Long> {
 
-    List<FileExtension> findByType(ExtensionType type,  PageRequest pageRequest);
+    Page<FileExtension> findByType(ExtensionType type, Pageable pageable);
 
     List<FileExtension> findByType(ExtensionType type);
 

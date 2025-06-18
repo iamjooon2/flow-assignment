@@ -9,7 +9,8 @@ import flow.assignment.dto.response.CustomFileCreateResponse;
 import flow.assignment.dto.response.CustomFileExtensionsReadResponse;
 import flow.assignment.dto.response.FixedFileExtensionsReadResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,9 +33,10 @@ public class FileExtensionService {
     }
 
     @Transactional(readOnly = true)
-    public CustomFileExtensionsReadResponse readCustomExtensions(PageRequest pageRequest) {
-        List<FileExtension> fileExtensions = fileExtensionRepository.findByType(CUSTOM, pageRequest);
-        return CustomFileExtensionsReadResponse.of(fileExtensions, FIXED_RATE_MAX_COUNT);
+    public CustomFileExtensionsReadResponse readCustomExtensions(Pageable pageable) {
+        Page<FileExtension> page = fileExtensionRepository.findByType(CUSTOM, pageable);
+        List<FileExtension> content = page.getContent();
+        return CustomFileExtensionsReadResponse.of(content, FIXED_RATE_MAX_COUNT);
     }
 
     public CustomFileCreateResponse createCustomFileExtension(FileExtensionCreateRequest request) {
@@ -46,8 +48,8 @@ public class FileExtensionService {
         if (fileExtensionRepository.existsByName(request.name())) {
             throw new IllegalArgumentException("이미 등록된 확장자명입니다.");
         }
-        FileExtension fileExtension = request.toEntity();
-        return CustomFileCreateResponse.of(fileExtensionRepository.save(fileExtension));
+        FileExtension fileExtension = fileExtensionRepository.save(request.toEntity());
+        return CustomFileCreateResponse.of(fileExtension);
     }
 
     public void updateFixedExtensionCheckStatus(Long id, boolean isChecked) {

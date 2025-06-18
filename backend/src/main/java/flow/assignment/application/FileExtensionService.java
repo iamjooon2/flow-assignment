@@ -5,6 +5,7 @@ import java.util.List;
 import flow.assignment.domain.FileExtension;
 import flow.assignment.domain.repository.FileExtensionRepository;
 import flow.assignment.dto.request.FileExtensionCreateRequest;
+import flow.assignment.dto.response.CustomFileCreateResponse;
 import flow.assignment.dto.response.CustomFileExtensionsReadResponse;
 import flow.assignment.dto.response.FixedFileExtensionsReadResponse;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class FileExtensionService {
         return CustomFileExtensionsReadResponse.of(fileExtensions, FIXED_RATE_MAX_COUNT);
     }
 
-    public Long createCustomFileExtension(FileExtensionCreateRequest request) {
+    public CustomFileCreateResponse createCustomFileExtension(FileExtensionCreateRequest request) {
         List<FileExtension> fixedExtensions = fileExtensionRepository.findByType(CUSTOM);
 
         if (fixedExtensions.size() >= FIXED_RATE_MAX_COUNT) {
@@ -46,7 +47,7 @@ public class FileExtensionService {
             throw new IllegalArgumentException("이미 등록된 확장자명입니다.");
         }
         FileExtension fileExtension = request.toEntity();
-        return fileExtensionRepository.save(fileExtension).getId();
+        return CustomFileCreateResponse.of(fileExtensionRepository.save(fileExtension));
     }
 
     public void updateFixedExtensionCheckStatus(Long id, boolean isChecked) {

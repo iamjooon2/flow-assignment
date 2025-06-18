@@ -3,6 +3,7 @@ package flow.assignment.presentation;
 import flow.assignment.application.FileExtensionService;
 import flow.assignment.dto.request.FileExtensionCreateRequest;
 import flow.assignment.dto.request.FixedFileExtensionUpdateRequest;
+import flow.assignment.dto.response.CustomFileCreateResponse;
 import flow.assignment.dto.response.CustomFileExtensionsReadResponse;
 import flow.assignment.dto.response.FixedFileExtensionsReadResponse;
 import jakarta.validation.Valid;
@@ -48,13 +49,11 @@ public class FileExtensionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createFileExtension(
+    public ResponseEntity<CustomFileCreateResponse> createFileExtension(
             @RequestBody @Valid FileExtensionCreateRequest request
     ) {
-        Long id = fileExtensionService.createCustomFileExtension(request);
-        return ResponseEntity.status(CREATED)
-                .header("Location", "/file-extensions" + id)
-                .build();
+        CustomFileCreateResponse response = fileExtensionService.createCustomFileExtension(request);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}")

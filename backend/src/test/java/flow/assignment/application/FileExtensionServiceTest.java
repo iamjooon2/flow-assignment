@@ -99,10 +99,10 @@ class FileExtensionServiceTest {
             var request = new FileExtensionCreateRequest("sh");
 
             // when
-            var id = sut.createCustomFileExtension(request);
+            var response = sut.createCustomFileExtension(request);
 
             // then
-            var actual = fileExtensionRepository.findById(id).orElseThrow();
+            var actual = fileExtensionRepository.findById(response.id()).orElseThrow();
             assertAll(
                     () -> assertThat(actual.getName()).isEqualTo("sh"),
                     () -> assertThat(actual.getType()).isEqualTo(CUSTOM),

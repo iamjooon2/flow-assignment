@@ -35,4 +35,20 @@ public class FileExtension {
         this.type = type;
         this.isChecked = isChecked;
     }
+
+    public void toChecked() {
+        validateCheckable();
+        this.isChecked = true;
+    }
+
+    public void toUnchecked() {
+        validateCheckable();
+        this.isChecked = false;
+    }
+
+    private void validateCheckable() {
+        if (type == ExtensionType.CUSTOM) {
+            throw new IllegalArgumentException("커스텀 확장자는 체크상태를 조절할 수 없습니다");
+        }
+    }
 }

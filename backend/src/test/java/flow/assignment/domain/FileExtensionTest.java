@@ -20,4 +20,15 @@ class FileExtensionTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("확장자명은 20자를 초과할 수 없습니다");
     }
+
+    @Test
+    void 커스텀_확장자는_체크상태를_변경할_수_없다() {
+        // given
+        FileExtension fileExtension = new FileExtension("test", ExtensionType.CUSTOM, false);
+
+        // when, then
+        assertThatThrownBy(fileExtension::toChecked)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("커스텀 확장자는 체크상태를 조절할 수 없습니다");
+    }
 }

@@ -1,0 +1,141 @@
+package flow.assignment.application;
+
+import flow.assignment.domain.FileExtension;
+import flow.assignment.domain.repository.FileExtensionRepository;
+import flow.assignment.dto.request.FileExtensionCreateRequest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static flow.assignment.domain.ExtensionType.CUSTOM;
+import static flow.assignment.domain.ExtensionType.FIXED;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
+@SpringBootTest
+class FileExtensionServiceTest {
+
+    @Autowired
+    FileExtensionRepository fileExtensionRepository;
+
+    @Autowired
+    FileExtensionService sut;
+
+    @Test
+    void 커스텀_확장자를_추가할_수_있다() {
+        // given
+        var request = new FileExtensionCreateRequest("sh");
+
+        // when
+        var id = sut.createCustomFileExtension(request);
+
+        // then
+        var actual = fileExtensionRepository.findById(id).orElseThrow();
+        assertAll(
+                () -> assertThat(actual.getName()).isEqualTo("sh"),
+                () -> assertThat(actual.getType()).isEqualTo(CUSTOM),
+                () -> assertThat(actual.isChecked()).isFalse()
+        );
+    }
+
+    @Test
+    void 커스텀_확장자_추가시_20자가_넘어간다면_생성할수_없고_예외가_발생한다() {
+        // given
+        var invalidName = "0".repeat(21);
+        var request = new FileExtensionCreateRequest(invalidName);
+
+        // when, then
+        assertThatThrownBy(() -> sut.createCustomFileExtension(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("확장자명은 20자를 초과할 수 없습니다");
+    }
+
+    @Test
+    void 커스텀_확장자를_200개넘게_등록하면_예외가_발생한다() {
+        // given
+        for (int i = 1; i <= 200; i += 1) {
+            fileExtensionRepository.save(new FileExtension("name" + i, CUSTOM, false));
+        }
+        var request = new FileExtensionCreateRequest("name201");
+
+        // when, then
+        assertThatThrownBy(() -> sut.createCustomFileExtension(request))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("커스텀확장자는 최대 200개까지만 등록 가능합니다");
+    }
+
+    @Test
+    void 이미_등록된_확장자명을_등록시_예외가_발생한다() {
+        // given
+        var duplicatedName = "sh";
+        fileExtensionRepository.save(new FileExtension(duplicatedName, CUSTOM, false));
+
+        var request = new FileExtensionCreateRequest(duplicatedName);
+
+        // when, then
+        assertThatThrownBy(() -> sut.createCustomFileExtension(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("이미 등록된 확장자명입니다");
+    }
+
+    @Test
+    void 고정_확장자의_체크상태를_체크에서_비체크로_변경할_수_있다() {
+        // given
+        var fileExtension = fileExtensionRepository.save(new FileExtension("bat", FIXED, false));
+
+        // when
+        sut.updateFixedExtensionCheckStatus(fileExtension.getId(), true);
+
+        // then
+        var actual = fileExtensionRepository.findById(fileExtension.getId()).orElseThrow();
+        assertThat(actual.isChecked()).isTrue();
+    }
+
+    @Test
+    void 고정_확장자의_체크상태를_비체크에서_체크로_변경할_수_있다() {
+        // given
+        var fileExtension = fileExtensionRepository.save(new FileExtension("bat", FIXED, true));
+
+        // when
+        sut.updateFixedExtensionCheckStatus(fileExtension.getId(), false);
+
+        // then
+        var actual = fileExtensionRepository.findById(fileExtension.getId()).orElseThrow();
+        assertThat(actual.isChecked()).isFalse();
+    }
+
+    @Test
+    void 존재하지_않는_고정_확장자의_체크상태를_변경할시_예외가_발생한다() {
+        // given
+        var nonExistingId = -1L;
+
+        // when, then
+        assertThatThrownBy(() -> sut.updateFixedExtensionCheckStatus(nonExistingId, true))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("존재하지 않는 확장자 id입니다");
+    }
+
+    @Test
+    void 커스텀_확장자를_삭제할_수_있다() {
+        // given
+        var fileExtension = fileExtensionRepository.save(new FileExtension("bat", FIXED, true));
+
+        // when
+        sut.delete(fileExtension.getId());
+
+        // then
+        var actual = fileExtensionRepository.findById(fileExtension.getId());
+        assertThat(actual).isEmpty();
+    }
+
+    @AfterEach
+    void setUp() {
+        fileExtensionRepository.deleteAll();
+    }
+}

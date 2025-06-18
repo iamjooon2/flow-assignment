@@ -34,9 +34,10 @@ public class FileExtensionService {
 
     @Transactional(readOnly = true)
     public CustomFileExtensionsReadResponse readCustomExtensions(Pageable pageable) {
+        List<FileExtension> total = fileExtensionRepository.findByType(CUSTOM);
         Page<FileExtension> page = fileExtensionRepository.findByType(CUSTOM, pageable);
         List<FileExtension> content = page.getContent();
-        return CustomFileExtensionsReadResponse.of(content, FIXED_RATE_MAX_COUNT);
+        return CustomFileExtensionsReadResponse.of(total.size(), FIXED_RATE_MAX_COUNT, content);
     }
 
     public CustomFileCreateResponse createCustomFileExtension(FileExtensionCreateRequest request) {

@@ -7,15 +7,15 @@ import lombok.Getter;
 
 public record CustomFileExtensionsReadResponse(
         long maxCount,
-        long currentCount,
+        long totalCount,
         List<CustomExtensionReadResponse> data
 ) {
 
-    public static CustomFileExtensionsReadResponse of(List<FileExtension> fileExtensions, long maxCount) {
+    public static CustomFileExtensionsReadResponse of(long totalCount,  long maxCount, List<FileExtension> fileExtensions) {
         List<CustomExtensionReadResponse> data = fileExtensions.stream()
                 .map(fileExtension -> new CustomExtensionReadResponse(fileExtension.getId(), fileExtension.getName()))
                 .toList();
-        return new CustomFileExtensionsReadResponse(maxCount, fileExtensions.size(), data);
+        return new CustomFileExtensionsReadResponse(maxCount, totalCount, data);
     }
 
     @Getter

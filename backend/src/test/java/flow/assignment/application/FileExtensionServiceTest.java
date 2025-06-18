@@ -84,7 +84,7 @@ class FileExtensionServiceTest {
 
             // then
             assertAll(
-                    () -> assertThat(customFileExtensionsReadResponse.currentCount()).isEqualTo(3),
+                    () -> assertThat(customFileExtensionsReadResponse.totalCount()).isEqualTo(3),
                     () -> assertThat(customFileExtensionsReadResponse.maxCount()).isEqualTo(200)
             );
         }

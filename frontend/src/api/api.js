@@ -34,9 +34,9 @@ export async function toggleFixedExtension(id, checked) {
 }
 
 // 커스텀 확장자 조회 (페이징)
-export async function fetchCustomExtensions(page = 1, size = 20) {
+export async function fetchCustomExtensions(page = 0, size = 20) {
   const res = await fetch(
-    `${API_BASE}/file-extensions/custom?page=${page}&size=${size}`
+    `${API_BASE}/file-extensions/custom?page=${page - 1}&size=${size}`
   );
   if (!res.ok) await handleError(res);
   return res.json(); // { currentCount, maxCount, data: [ { id, name } ] }

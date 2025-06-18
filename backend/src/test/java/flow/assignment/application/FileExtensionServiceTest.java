@@ -1,5 +1,7 @@
 package flow.assignment.application;
 
+import java.util.List;
+
 import flow.assignment.domain.FileExtension;
 import flow.assignment.domain.repository.FileExtensionRepository;
 import flow.assignment.dto.request.FileExtensionCreateRequest;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 
 import static flow.assignment.domain.ExtensionType.CUSTOM;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -32,7 +35,18 @@ class FileExtensionServiceTest {
 
         @Test
         void 고정_확장자_목록을_조회할_수_있다() {
-            // given, when
+            // given
+            fileExtensionRepository.saveAll(List.of(
+                    FileExtension.createFixed("bat", false),
+                    FileExtension.createFixed("cmd", false),
+                    FileExtension.createFixed("com", false),
+                    FileExtension.createFixed("cpi", false),
+                    FileExtension.createFixed("exe", false),
+                    FileExtension.createFixed("scr", false),
+                    FileExtension.createFixed("js", false)
+            ));
+
+            // when
             var customFileExtensionsReadResponse = sut.readFixedExtensions();
 
             // then
@@ -65,7 +79,8 @@ class FileExtensionServiceTest {
             fileExtensionRepository.save(FileExtension.createCustom("test4"));
 
             // when
-            var customFileExtensionsReadResponse = sut.readCustomExtensions();
+            PageRequest pageRequest = PageRequest.of(0, 10);
+            var customFileExtensionsReadResponse = sut.readCustomExtensions(pageRequest);
 
             // then
             assertAll(

@@ -36,8 +36,12 @@ public class FileExtensionController {
     }
 
     @GetMapping("/custom")
-    public ResponseEntity<CustomFileExtensionsReadResponse> getFileExtensionsCustom() {
-        CustomFileExtensionsReadResponse response = fileExtensionService.readCustomExtensions();
+    public ResponseEntity<CustomFileExtensionsReadResponse> getFileExtensionsCustom(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        PageRequest pageRequest = PageRequest.of(page + 1, size, Sort.by("id").descending());
+        CustomFileExtensionsReadResponse response = fileExtensionService.readCustomExtensions(pageRequest);
         return ResponseEntity.ok(response);
     }
 

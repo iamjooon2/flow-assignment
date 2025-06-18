@@ -8,6 +8,7 @@ import flow.assignment.dto.request.FileExtensionCreateRequest;
 import flow.assignment.dto.response.CustomFileExtensionsReadResponse;
 import flow.assignment.dto.response.FixedFileExtensionsReadResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +31,8 @@ public class FileExtensionService {
     }
 
     @Transactional(readOnly = true)
-    public CustomFileExtensionsReadResponse readCustomExtensions() {
-        List<FileExtension> fileExtensions = fileExtensionRepository.findByType(CUSTOM);
+    public CustomFileExtensionsReadResponse readCustomExtensions(PageRequest pageRequest) {
+        List<FileExtension> fileExtensions = fileExtensionRepository.findByType(CUSTOM, pageRequest);
         return CustomFileExtensionsReadResponse.of(fileExtensions, FIXED_RATE_MAX_COUNT);
     }
 

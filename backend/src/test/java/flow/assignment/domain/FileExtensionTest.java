@@ -16,7 +16,7 @@ class FileExtensionTest {
         String invalidName = "0".repeat(21);
 
         // when, then
-        assertThatThrownBy(() -> new FileExtension(invalidName, ExtensionType.CUSTOM, false))
+        assertThatThrownBy(() -> FileExtension.createCustom(invalidName))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("확장자명은 20자를 초과할 수 없습니다");
     }
@@ -24,7 +24,7 @@ class FileExtensionTest {
     @Test
     void 커스텀_확장자는_체크상태를_변경할_수_없다() {
         // given
-        FileExtension fileExtension = new FileExtension("test", ExtensionType.CUSTOM, false);
+        FileExtension fileExtension = FileExtension.createCustom("test");
 
         // when, then
         assertThatThrownBy(fileExtension::toChecked)

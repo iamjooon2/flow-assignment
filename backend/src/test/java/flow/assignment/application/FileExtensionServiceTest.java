@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static flow.assignment.domain.ExtensionType.CUSTOM;
-import static flow.assignment.domain.ExtensionType.FIXED;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -60,7 +59,7 @@ class FileExtensionServiceTest {
     void 커스텀_확장자를_200개넘게_등록하면_예외가_발생한다() {
         // given
         for (int i = 1; i <= 200; i += 1) {
-            fileExtensionRepository.save(new FileExtension("name" + i, CUSTOM, false));
+            fileExtensionRepository.save(FileExtension.createCustom("name" + i));
         }
         var request = new FileExtensionCreateRequest("name201");
 
@@ -74,7 +73,7 @@ class FileExtensionServiceTest {
     void 이미_등록된_확장자명을_등록시_예외가_발생한다() {
         // given
         var duplicatedName = "sh";
-        fileExtensionRepository.save(new FileExtension(duplicatedName, CUSTOM, false));
+        fileExtensionRepository.save(FileExtension.createCustom(duplicatedName));
 
         var request = new FileExtensionCreateRequest(duplicatedName);
 
@@ -87,7 +86,7 @@ class FileExtensionServiceTest {
     @Test
     void 고정_확장자의_체크상태를_체크에서_비체크로_변경할_수_있다() {
         // given
-        var fileExtension = fileExtensionRepository.save(new FileExtension("bat", FIXED, false));
+        var fileExtension = fileExtensionRepository.save(FileExtension.createFixed("test1", false));
 
         // when
         sut.updateFixedExtensionCheckStatus(fileExtension.getId(), true);
@@ -100,7 +99,7 @@ class FileExtensionServiceTest {
     @Test
     void 고정_확장자의_체크상태를_비체크에서_체크로_변경할_수_있다() {
         // given
-        var fileExtension = fileExtensionRepository.save(new FileExtension("bat", FIXED, true));
+        var fileExtension = fileExtensionRepository.save(FileExtension.createFixed("bat", true));
 
         // when
         sut.updateFixedExtensionCheckStatus(fileExtension.getId(), false);
@@ -124,7 +123,7 @@ class FileExtensionServiceTest {
     @Test
     void 커스텀_확장자를_삭제할_수_있다() {
         // given
-        var fileExtension = fileExtensionRepository.save(new FileExtension("bat", FIXED, true));
+        var fileExtension = fileExtensionRepository.save(FileExtension.createCustom("bat"));
 
         // when
         sut.delete(fileExtension.getId());

@@ -27,7 +27,7 @@ export async function toggleFixedExtension(id, checked) {
   const res = await fetch(`${API_BASE}/file-extensions/${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ checked }),
+    body: JSON.stringify({ isChecked: checked }),
   });
   if (!res.ok) await handleError(res);
   return res;

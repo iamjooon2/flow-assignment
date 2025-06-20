@@ -3,7 +3,7 @@ FROM gradle:8.4-jdk21 AS builder
 
 # 캐싱
 WORKDIR /app
-COPY build.gradle.kts settings.gradle.kts gradle.properties ./
+COPY build.gradle.kts settings.gradle.kts ./
 COPY gradle ./gradle
 RUN gradle build -x test || return 0  # 초기 캐시용, 실패해도 넘어감
 

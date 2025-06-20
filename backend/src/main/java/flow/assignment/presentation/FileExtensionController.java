@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://flow-assignment-front.vercel.app")
 @RequestMapping("/file-extensions")
 @RequiredArgsConstructor
 @RestController

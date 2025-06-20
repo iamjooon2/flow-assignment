@@ -28,7 +28,7 @@ class DefaultFixedFileExtensionLoaderTest {
 
         // then
         List<String> names = fixedExtensions.stream()
-                .map(FileExtension::getName)
+                .map(fileExtension -> fileExtension.getName().getValue())
                 .toList();
         assertThat(names).isEqualTo(List.of("bat", "cmd", "com", "cpi", "exe", "scr", "js"));
         assertThat(names.size()).isEqualTo(7);

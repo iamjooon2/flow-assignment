@@ -73,10 +73,10 @@ class FileExtensionServiceTest {
         @Test
         void 커스텀_확장자_목록을_조회할_수_있다() {
             // given
-            fileExtensionRepository.save(FileExtension.createFixed("test1", false));
-            fileExtensionRepository.save(FileExtension.createCustom("test2"));
-            fileExtensionRepository.save(FileExtension.createCustom("test3"));
-            fileExtensionRepository.save(FileExtension.createCustom("test4"));
+            fileExtensionRepository.save(FileExtension.createFixed("test", false));
+            fileExtensionRepository.save(FileExtension.createCustom("testtest"));
+            fileExtensionRepository.save(FileExtension.createCustom("testtesttest"));
+            fileExtensionRepository.save(FileExtension.createCustom("testtesttesttest"));
 
             // when
             PageRequest pageRequest = PageRequest.of(0, 10);
@@ -104,7 +104,7 @@ class FileExtensionServiceTest {
             // then
             var actual = fileExtensionRepository.findById(response.id()).orElseThrow();
             assertAll(
-                    () -> assertThat(actual.getName()).isEqualTo("sh"),
+                    () -> assertThat(actual.getName().getValue()).isEqualTo("sh"),
                     () -> assertThat(actual.getType()).isEqualTo(CUSTOM),
                     () -> assertThat(actual.isChecked()).isFalse()
             );
@@ -113,7 +113,7 @@ class FileExtensionServiceTest {
         @Test
         void 커스텀_확장자_추가시_20자가_넘어간다면_생성할수_없고_예외가_발생한다() {
             // given
-            var invalidName = "0".repeat(21);
+            var invalidName = "a".repeat(21);
             var request = new FileExtensionCreateRequest(invalidName);
 
             // when, then
@@ -126,9 +126,10 @@ class FileExtensionServiceTest {
         void 커스텀_확장자를_200개넘게_등록하면_예외가_발생한다() {
             // given
             for (int i = 1; i <= 200; i += 1) {
-                fileExtensionRepository.save(FileExtension.createCustom("name" + i));
+                String validName = TestHelper.generateValidName(i);
+                fileExtensionRepository.save(FileExtension.createCustom(validName));
             }
-            var request = new FileExtensionCreateRequest("name201");
+            var request = new FileExtensionCreateRequest("TwoHunderedOnethName");
 
             // when, then
             assertThatThrownBy(() -> sut.createCustomFileExtension(request))
@@ -157,7 +158,7 @@ class FileExtensionServiceTest {
         @Test
         void 고정_확장자의_체크상태를_체크에서_비체크로_변경할_수_있다() {
             // given
-            var fileExtension = fileExtensionRepository.save(FileExtension.createFixed("test1", false));
+            var fileExtension = fileExtensionRepository.save(FileExtension.createFixed("test", false));
 
             // when
             sut.updateFixedExtensionCheckStatus(fileExtension.getId(), true);
@@ -208,5 +209,18 @@ class FileExtensionServiceTest {
     @AfterEach
     void setUp() {
         fileExtensionRepository.deleteAll();
+    }
+
+    static class TestHelper {
+
+        private static String generateValidName(int index) {
+            // 예: aaa, aab, aac, ..., baa, bab, ...
+            char[] chars = new char[3];
+            chars[0] = (char) ('a' + (index / 676) % 26); // 26^2
+            chars[1] = (char) ('a' + (index / 26) % 26);
+            chars[2] = (char) ('a' + index % 26);
+            return new String(chars);
+        }
+
     }
 }

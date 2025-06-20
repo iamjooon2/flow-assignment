@@ -3,13 +3,19 @@ package flow.assignment.domain;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class FileName {
 
     private static final String DOT = ".";
     private static final int MAX_NAME_LENGTH = 20;
     private static final Pattern LOWERCASE_PATTERN = Pattern.compile("^[a-z]+$");
 
-    private final String value;
+    private String value;
 
     private FileName(String value) {
         this.value = value;
@@ -39,10 +45,6 @@ public class FileName {
         if (!LOWERCASE_PATTERN.matcher(value).matches()) {
             throw new IllegalArgumentException("확장자명은 영어 소문자만 사용 가능합니다");
         }
-    }
-
-    public String getValue() {
-        return value;
     }
 
     @Override

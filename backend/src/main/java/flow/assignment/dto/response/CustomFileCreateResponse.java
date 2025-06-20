@@ -8,7 +8,7 @@ public record CustomFileCreateResponse(
 ) {
 
     public static CustomFileCreateResponse of(FileExtension fileExtension) {
-        return new CustomFileCreateResponse(fileExtension.getId(), fileExtension.getName());
+        return new CustomFileCreateResponse(fileExtension.getId(), fileExtension.getName().getValue());
     }
 
 }

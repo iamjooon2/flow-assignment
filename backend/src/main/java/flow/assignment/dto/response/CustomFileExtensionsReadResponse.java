@@ -13,7 +13,7 @@ public record CustomFileExtensionsReadResponse(
 
     public static CustomFileExtensionsReadResponse of(long totalCount,  long maxCount, List<FileExtension> fileExtensions) {
         List<CustomExtensionReadResponse> data = fileExtensions.stream()
-                .map(fileExtension -> new CustomExtensionReadResponse(fileExtension.getId(), fileExtension.getName()))
+                .map(fileExtension -> new CustomExtensionReadResponse(fileExtension.getId(), fileExtension.getName().getValue()))
                 .toList();
         return new CustomFileExtensionsReadResponse(maxCount, totalCount, data);
     }

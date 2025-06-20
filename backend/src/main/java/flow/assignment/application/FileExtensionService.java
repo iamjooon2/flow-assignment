@@ -3,6 +3,7 @@ package flow.assignment.application;
 import java.util.List;
 
 import flow.assignment.domain.FileExtension;
+import flow.assignment.domain.FileName;
 import flow.assignment.domain.repository.FileExtensionRepository;
 import flow.assignment.dto.request.FileExtensionCreateRequest;
 import flow.assignment.dto.response.CustomFileCreateResponse;
@@ -42,11 +43,10 @@ public class FileExtensionService {
 
     public CustomFileCreateResponse createCustomFileExtension(FileExtensionCreateRequest request) {
         List<FileExtension> fixedExtensions = fileExtensionRepository.findByType(CUSTOM);
-
         if (fixedExtensions.size() >= FIXED_RATE_MAX_COUNT) {
             throw new IllegalArgumentException("커스텀확장자는 최대 " + FIXED_RATE_MAX_COUNT + "개까지만 등록 가능합니다");
         }
-        if (fileExtensionRepository.existsByName(request.name())) {
+        if (fileExtensionRepository.existsByName(FileName.create(request.name()))) {
             throw new IllegalArgumentException("이미 등록된 확장자명입니다.");
         }
         FileExtension fileExtension = fileExtensionRepository.save(request.toEntity());

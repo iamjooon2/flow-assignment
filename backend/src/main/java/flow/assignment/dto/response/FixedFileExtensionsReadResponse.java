@@ -11,7 +11,7 @@ public record FixedFileExtensionsReadResponse(
 
     public static FixedFileExtensionsReadResponse of(List<FileExtension> fileExtensions) {
         List<FileExtensionReadResponse> data = fileExtensions.stream()
-                .map(fileExtension -> new FileExtensionReadResponse(fileExtension.getId(), fileExtension.isChecked(), fileExtension.getName()))
+                .map(fileExtension -> new FileExtensionReadResponse(fileExtension.getId(), fileExtension.isChecked(), fileExtension.getName().getValue()))
                 .toList();
         return new FixedFileExtensionsReadResponse(data);
     }

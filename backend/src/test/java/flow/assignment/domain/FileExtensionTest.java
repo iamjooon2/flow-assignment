@@ -13,7 +13,7 @@ class FileExtensionTest {
     @Test
     void 파일_이름이_20자를_초과한다면_예외가_발생한다() {
         // given
-        String invalidName = "0".repeat(21);
+        var invalidName = "0".repeat(21);
 
         // when, then
         assertThatThrownBy(() -> FileExtension.createCustom(invalidName))
@@ -24,7 +24,7 @@ class FileExtensionTest {
     @Test
     void 커스텀_확장자는_체크상태를_변경할_수_없다() {
         // given
-        FileExtension fileExtension = FileExtension.createCustom("test");
+        var fileExtension = FileExtension.createCustom("test");
 
         // when, then
         assertThatThrownBy(fileExtension::toChecked)

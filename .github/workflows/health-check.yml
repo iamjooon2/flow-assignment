@@ -1,0 +1,16 @@
+name: Ping Render Backend Every 10 Minutes
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # 10분마다 실행
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Curl to Render (ping endpoint)
+        env:
+          PING_URL: ${{ secrets.RENDER_PING_URL }}
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" "$PING_URL"
